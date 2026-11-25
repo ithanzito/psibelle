@@ -325,7 +325,7 @@ export default function AdminDashboardPage(): React.ReactElement {
                 required
                 value={loginPassword}
                 onChange={(e) => setLoginPassword(e.target.value)}
-                placeholder="Digite sua senha (ex: psibelle10)"
+                placeholder="Digite sua senha de acesso"
                 className="w-full px-4 py-3 rounded-xl border border-sand-300 text-sm focus:outline-none focus:border-sage-600"
               />
             </div>

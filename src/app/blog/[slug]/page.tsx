@@ -82,8 +82,8 @@ function renderInlineFormatting(text: string): React.ReactNode {
 }
 
 /**
- * Renders markdown content with automatic interleaved conversion CTAs ("Agende sua consulta!")
- * every 2 major sections — replicating the exact high-converting article template of the reference site.
+ * Renders markdown content with automatic interleaved conversion CTAs ("Agende sua consulta!"),
+ * supporting mixed paragraph + list blocks and preserving numbered (<ol>) vs bulleted (<ul>) lists.
  */
 function renderArticleContentWithInterleavedCtas(
   markdown: string,
@@ -168,31 +168,79 @@ function renderArticleContentWithInterleavedCtas(
       return;
     }
 
-    // Bullet or Numbered lists
+    // Handle pure or mixed paragraphs + bullet/numbered lists line-by-line
     const lines = block.split("\n");
-    if (lines.every((l) => l.trim().startsWith("- ") || l.trim().match(/^\d+\.\s/))) {
-      elements.push(
-        <ul
-          key={`list-${index}`}
-          className="my-4 space-y-2.5 pl-5 list-disc marker:text-sage-600 text-sage-900 leading-relaxed"
-        >
-          {lines.map((line, lIdx) => {
-            const cleanLine = line.trim().replace(/^(-|\d+\.)\s+/, "");
-            return <li key={lIdx}>{renderInlineFormatting(cleanLine)}</li>;
-          })}
-        </ul>
-      );
-      return;
+    let paragraphBuffer: string[] = [];
+    let bulletBuffer: string[] = [];
+    let orderedBuffer: string[] = [];
+    let subIdx = 0;
+
+    const flushBuffers = (): void => {
+      if (paragraphBuffer.length > 0) {
+        const text = paragraphBuffer.join(" ");
+        elements.push(
+          <p
+            key={`p-${index}-${subIdx++}`}
+            className="my-4 text-base sm:text-lg text-sage-900/90 leading-relaxed"
+          >
+            {renderInlineFormatting(text)}
+          </p>
+        );
+        paragraphBuffer = [];
+      }
+
+      if (bulletBuffer.length > 0) {
+        elements.push(
+          <ul
+            key={`ul-${index}-${subIdx++}`}
+            className="my-4 space-y-2.5 pl-6 list-disc marker:text-sage-600 text-sage-900 leading-relaxed"
+          >
+            {bulletBuffer.map((item, bIdx) => (
+              <li key={bIdx}>{renderInlineFormatting(item)}</li>
+            ))}
+          </ul>
+        );
+        bulletBuffer = [];
+      }
+
+      if (orderedBuffer.length > 0) {
+        elements.push(
+          <ol
+            key={`ol-${index}-${subIdx++}`}
+            className="my-4 space-y-2.5 pl-6 list-decimal marker:font-bold marker:text-sage-700 text-sage-900 leading-relaxed"
+          >
+            {orderedBuffer.map((item, oIdx) => (
+              <li key={oIdx}>{renderInlineFormatting(item)}</li>
+            ))}
+          </ol>
+        );
+        orderedBuffer = [];
+      }
+    };
+
+    for (const rawLine of lines) {
+      const line = rawLine.trim();
+      if (!line) continue;
+
+      if (line.startsWith("- ")) {
+        if (paragraphBuffer.length > 0 || orderedBuffer.length > 0) {
+          flushBuffers();
+        }
+        bulletBuffer.push(line.replace(/^-\s+/, ""));
+      } else if (/^\d+\.\s+/.test(line)) {
+        if (paragraphBuffer.length > 0 || bulletBuffer.length > 0) {
+          flushBuffers();
+        }
+        orderedBuffer.push(line.replace(/^\d+\.\s+/, ""));
+      } else {
+        if (bulletBuffer.length > 0 || orderedBuffer.length > 0) {
+          flushBuffers();
+        }
+        paragraphBuffer.push(line);
+      }
     }
 
-    elements.push(
-      <p
-        key={`p-${index}`}
-        className="my-4 text-base sm:text-lg text-sage-900/90 leading-relaxed"
-      >
-        {renderInlineFormatting(block)}
-      </p>
-    );
+    flushBuffers();
   });
 
   return elements;
@@ -208,11 +256,15 @@ export async function generateMetadata({
   if (!post) {
     return { title: "Artigo não encontrado" };
   }
+  const cleanTitle = (post.seo_title || post.title)
+    .replace(/\s*\|\s*Psicóloga Isabelle Momesso$/i, "")
+    .replace(/\s*\|\s*Isabelle Momesso$/i, "");
+
   return {
-    title: post.seo_title || post.title,
+    title: cleanTitle,
     description: post.seo_description || post.excerpt,
     openGraph: {
-      title: post.seo_title || post.title,
+      title: `${cleanTitle} | ${PSI_PROFILE.name}`,
       description: post.seo_description || post.excerpt,
       type: "article",
       images: [post.cover_image || "/images/isabelle-escrevendo.jpg"],
@@ -221,12 +273,8 @@ export async function generateMetadata({
 }
 
 /**
- * Single Blog Post Page ('/blog/[slug]') featuring:
- * 1. Top Reading Progress Bar
- * 2. Clickable Table of Contents (Sumário)
- * 3. Educational content with interleaved "Agende sua consulta!" WhatsApp CTAs
- * 4. Recurring Specialist Authority Block ("Psicóloga especialista em TCC")
- * 5. "Leia também" internal cross-links
+ * Single Blog Post Page ('/blog/[slug]') with 2-column Editorial Hero that displays
+ * Isabelle's vertical portrait photos in full 4:5 aspect ratio without cropping her face.
  */
 export default async function SingleBlogPostPage({
   params,
@@ -250,83 +298,90 @@ export default async function SingleBlogPostPage({
     <div className="bg-white pb-20">
       <ReadingProgressBar />
 
-      {/* Article Header */}
-      <header className="bg-gradient-to-b from-sand-100 to-white pt-10 pb-10 border-b border-sand-200">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 space-y-5">
+      {/* 2-Column Editorial Article Header (Preserves full 4:5 vertical portrait without cropping) */}
+      <header className="bg-gradient-to-b from-sand-100 to-white pt-10 pb-12 border-b border-sand-200">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <Link
             href="/blog"
-            className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-sage-700 hover:text-petrol-900"
+            className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-sage-700 hover:text-petrol-900 mb-6"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>Voltar para o Blog</span>
           </Link>
 
-          <div className="flex flex-wrap items-center gap-3">
-            <span className="px-3.5 py-1 rounded-full bg-petrol-900 text-bronze-400 text-xs font-bold uppercase tracking-wider">
-              {post.category}
-            </span>
-            <span className="inline-flex items-center gap-1.5 text-xs text-sage-700 font-medium">
-              <BookOpen className="w-3.5 h-3.5" />
-              Leitura de {post.reading_time} min
-            </span>
-            <span className="inline-flex items-center gap-1.5 text-xs text-sage-700 font-medium">
-              <Calendar className="w-3.5 h-3.5" />
-              {new Date(post.created_at).toLocaleDateString("pt-BR")}
-            </span>
-          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
+            {/* Left Column: Title, Meta & Author (7 cols) */}
+            <div className="lg:col-span-7 space-y-5">
+              <div className="flex flex-wrap items-center gap-3">
+                <span className="px-3.5 py-1 rounded-full bg-petrol-900 text-bronze-400 text-xs font-bold uppercase tracking-wider">
+                  {post.category}
+                </span>
+                <span className="inline-flex items-center gap-1.5 text-xs text-sage-700 font-medium">
+                  <BookOpen className="w-3.5 h-3.5" />
+                  Leitura de {post.reading_time} min
+                </span>
+                <span className="inline-flex items-center gap-1.5 text-xs text-sage-700 font-medium">
+                  <Calendar className="w-3.5 h-3.5" />
+                  {new Date(post.created_at).toLocaleDateString("pt-BR")}
+                </span>
+              </div>
 
-          <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-petrol-900 leading-tight">
-            {post.title}
-          </h1>
+              <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-petrol-900 leading-tight">
+                {post.title}
+              </h1>
 
-          {post.subtitle && (
-            <p className="text-base sm:text-lg text-sage-800 leading-relaxed">
-              {post.subtitle}
-            </p>
-          )}
+              {post.subtitle && (
+                <p className="text-base sm:text-lg text-sage-800 leading-relaxed">
+                  {post.subtitle}
+                </p>
+              )}
 
-          {/* Author Byline */}
-          <div className="pt-2 flex items-center gap-3.5">
-            <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-bronze-400">
-              <Image
-                src="/images/isabelle-poltrona.jpg"
-                alt={PSI_PROFILE.name}
-                fill
-                sizes="48px"
-                className="object-cover object-top"
-              />
+              {/* Author Byline */}
+              <div className="pt-2 flex items-center gap-3.5">
+                <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-bronze-400 shrink-0">
+                  <Image
+                    src="/images/isabelle-poltrona.jpg"
+                    alt={PSI_PROFILE.name}
+                    fill
+                    sizes="48px"
+                    className="object-cover object-top"
+                  />
+                </div>
+                <div>
+                  <p className="text-sm font-bold text-petrol-900">
+                    Por {PSI_PROFILE.name}
+                  </p>
+                  <p className="text-xs text-sage-700">
+                    {PSI_PROFILE.crp} • {PSI_PROFILE.approach}
+                  </p>
+                </div>
+              </div>
             </div>
-            <div>
-              <p className="text-sm font-bold text-petrol-900">
-                Por {PSI_PROFILE.name}
-              </p>
-              <p className="text-xs text-sage-700">
-                {PSI_PROFILE.crp} • {PSI_PROFILE.approach}
-              </p>
+
+            {/* Right Column: Full Uncropped 4:5 Portrait Cover Image (5 cols) */}
+            <div className="lg:col-span-5">
+              <div className="relative mx-auto max-w-sm rounded-3xl overflow-hidden shadow-card border-4 border-white aspect-[4/5] bg-sand-100">
+                <Image
+                  src={post.cover_image || "/images/isabelle-escrevendo.jpg"}
+                  alt={post.title}
+                  fill
+                  priority
+                  sizes="(max-width: 1024px) 100vw, 380px"
+                  className="object-cover object-top"
+                />
+              </div>
             </div>
           </div>
         </div>
       </header>
 
-      {/* Main Article Container (max-w-3xl like reference single posts) */}
-      <article className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
-        {/* Featured Cover Image */}
-        <div className="relative w-full h-72 sm:h-96 rounded-3xl overflow-hidden shadow-card border border-sand-200 mb-8 bg-sand-100">
-          <Image
-            src={post.cover_image || "/images/isabelle-escrevendo.jpg"}
-            alt={post.title}
-            fill
-            priority
-            sizes="(max-width: 768px) 100vw, 768px"
-            className="object-cover object-top"
-          />
-        </div>
-
-        {/* Table of Contents (Sumário do Artigo — Essential Blocks equivalent) */}
+      {/* Main Article Container */}
+      <article className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+        {/* Table of Contents (Sumário do Artigo) */}
         {headings.length > 0 && (
           <nav
             aria-label="Sumário do artigo"
-            className="my-8 p-6 rounded-2xl bg-sand-50 border border-sand-300 shadow-sm"
+            className="my-6 p-6 rounded-2xl bg-sand-50 border border-sand-300 shadow-sm"
           >
             <div className="flex items-center gap-2 font-serif text-xl font-bold text-petrol-900 mb-3">
               <ListChecks className="w-5 h-5 text-sage-600" />
@@ -336,7 +391,11 @@ export default async function SingleBlogPostPage({
               {headings.map((h) => (
                 <li
                   key={h.id}
-                  className={h.level === 3 ? "pl-4 text-sage-700" : "font-semibold text-petrol-900"}
+                  className={
+                    h.level === 3
+                      ? "pl-4 text-sage-700"
+                      : "font-semibold text-petrol-900"
+                  }
                 >
                   <a
                     href={`#${h.id}`}
@@ -355,7 +414,7 @@ export default async function SingleBlogPostPage({
           {renderArticleContentWithInterleavedCtas(post.content, post.title)}
         </div>
 
-        {/* Recurring Authority Block ("Psicóloga especialista em Terapia Cognitivo-Comportamental") */}
+        {/* Recurring Authority Block */}
         <section className="mt-12 p-7 sm:p-8 rounded-3xl bg-petrol-900 text-sand-50 shadow-card border border-bronze-400/30 space-y-5">
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5">
             <div className="relative w-20 h-20 rounded-2xl overflow-hidden border-2 border-bronze-400 shrink-0">
@@ -414,7 +473,7 @@ export default async function SingleBlogPostPage({
         )}
       </article>
 
-      {/* Section "Leia também" (Cross-links for SEO) */}
+      {/* Section "Leia também" */}
       <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 mt-16 pt-12 border-t border-sand-200">
         <h2 className="font-serif text-3xl font-bold text-petrol-900 mb-8">
           Leia também outros artigos do Blog:

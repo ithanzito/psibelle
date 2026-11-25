@@ -17,10 +17,12 @@ const NAV_ITEMS = [
 ];
 
 /**
- * Global sticky Header with Monogram logo, navigation links, blog search bar, and direct WhatsApp CTA.
+ * Global sticky Header with single-line guaranteed alignment (`whitespace-nowrap`),
+ * expandable search bar drawer, and high-contrast WhatsApp CTA.
  */
 export function Header(): React.ReactElement {
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
+  const [searchOpen, setSearchOpen] = useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const pathname = usePathname();
   const router = useRouter();
@@ -29,9 +31,11 @@ export function Header(): React.ReactElement {
     e.preventDefault();
     if (!searchTerm.trim()) {
       router.push("/blog");
+      setSearchOpen(false);
       return;
     }
     router.push(`/blog?q=${encodeURIComponent(searchTerm.trim())}`);
+    setSearchOpen(false);
     setMobileMenuOpen(false);
   };
 
@@ -41,8 +45,8 @@ export function Header(): React.ReactElement {
       <div className="bg-petrol-950 text-sand-200 text-xs py-1.5 px-4 border-b border-white/5">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-3">
-            <span className="inline-flex items-center gap-1 font-medium text-bronze-400">
-              <ShieldCheck className="w-3.5 h-3.5" />
+            <span className="inline-flex items-center gap-1 font-semibold text-bronze-400 whitespace-nowrap">
+              <ShieldCheck className="w-3.5 h-3.5 shrink-0" />
               {PSI_PROFILE.crp}
             </span>
             <span className="hidden sm:inline text-white/25">|</span>
@@ -52,52 +56,57 @@ export function Header(): React.ReactElement {
           </div>
           <div className="flex items-center gap-4 text-xs">
             <span className="inline-flex items-center gap-1 text-sand-200/90">
-              <MapPin className="w-3.5 h-3.5 text-bronze-400" />
-              Presencial em Sorocaba (Clínica Almenara) & Online (Brasil e Exterior)
+              <MapPin className="w-3.5 h-3.5 text-bronze-400 shrink-0" />
+              <span>
+                Presencial em Sorocaba (Clínica Almenara) & Online (Brasil e Exterior)
+              </span>
             </span>
           </div>
         </div>
       </div>
 
-      {/* Main Navigation Row */}
+      {/* Main Single-Row Navigation */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20 gap-4">
-          {/* Column 1: Logo Monogram */}
+          {/* Column 1: Logo Monogram & Brand Name (Never wraps) */}
           <Link
             href="/"
-            className="flex items-center gap-3 group focus:outline-none"
+            className="flex items-center gap-3 group focus:outline-none shrink-0"
             aria-label="Página Inicial - Psicóloga Isabelle Momesso"
           >
-            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-sage-600 to-petrol-950 border-2 border-bronze-400/80 flex items-center justify-center shadow-inner group-hover:scale-105 transition-transform">
-              <span className="font-serif text-xl font-bold tracking-wider text-sand-50">
+            <div className="w-11 h-11 rounded-full bg-gradient-to-br from-sage-600 to-petrol-950 border-2 border-bronze-400/80 flex items-center justify-center shadow-inner group-hover:scale-105 transition-transform shrink-0">
+              <span className="font-serif text-lg font-bold tracking-wider text-sand-50">
                 IM
               </span>
             </div>
-            <div className="flex flex-col">
-              <span className="font-serif text-xl sm:text-2xl font-semibold tracking-wide text-sand-50 leading-tight">
+            <div className="flex flex-col whitespace-nowrap">
+              <span className="font-serif text-xl sm:text-2xl font-semibold tracking-wide text-sand-50 leading-none">
                 Isabelle Momesso
               </span>
-              <span className="text-[11px] uppercase tracking-widest text-bronze-400 font-medium">
+              <span className="text-[11px] uppercase tracking-widest text-bronze-400 font-semibold mt-1 leading-none">
                 Psicóloga • {PSI_PROFILE.crp}
               </span>
             </div>
           </Link>
 
-          {/* Column 2: Desktop Menu Links */}
-          <nav className="hidden xl:flex items-center gap-6" aria-label="Menu Principal">
+          {/* Column 2: Desktop Menu Links (Single line guaranteed) */}
+          <nav
+            className="hidden xl:flex items-center gap-5 2xl:gap-7 shrink-0"
+            aria-label="Menu Principal"
+          >
             {NAV_ITEMS.map((item) => {
               const isActive =
                 item.href === "/"
                   ? pathname === "/"
-                  : pathname.startsWith(item.href.replace("/#", "/"));
+                  : !item.href.includes("#") && pathname.startsWith(item.href);
               return (
                 <Link
                   key={item.label}
                   href={item.href}
-                  className={`text-sm font-medium transition-colors py-1 border-b-2 ${
+                  className={`whitespace-nowrap text-sm font-medium transition-colors py-1.5 border-b-2 ${
                     isActive
                       ? "text-bronze-400 border-bronze-400"
-                      : "text-sand-100/90 border-transparent hover:text-bronze-400 hover:border-bronze-400/50"
+                      : "text-sand-100/95 border-transparent hover:text-bronze-400 hover:border-bronze-400/50"
                   }`}
                 >
                   {item.label}
@@ -106,53 +115,45 @@ export function Header(): React.ReactElement {
             })}
           </nav>
 
-          {/* Column 3: Search Input + Direct WhatsApp CTA */}
-          <div className="hidden lg:flex items-center gap-3">
-            <form onSubmit={handleSearchSubmit} className="relative">
-              <input
-                type="search"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Pesquisar tema..."
-                aria-label="Pesquisar artigos no blog"
-                className="w-40 xl:w-44 pl-3 pr-8 py-1.5 text-xs rounded-full bg-petrol-950/90 border border-sage-700/70 text-sand-50 placeholder-sand-300/60 focus:outline-none focus:border-bronze-400 transition-all"
-              />
-              <button
-                type="submit"
-                aria-label="Buscar"
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-bronze-400 hover:text-sand-50"
-              >
-                <Search className="w-3.5 h-3.5" />
-              </button>
-            </form>
+          {/* Column 3: Compact Search Toggle + Direct Single-Line WhatsApp CTA */}
+          <div className="hidden lg:flex items-center gap-2.5 shrink-0">
+            <button
+              type="button"
+              onClick={() => setSearchOpen((prev) => !prev)}
+              aria-label="Abrir busca de artigos no blog"
+              title="Pesquisar artigos no blog"
+              className="w-10 h-10 rounded-full bg-petrol-950/90 hover:bg-petrol-800 border border-sage-700/70 text-bronze-400 hover:text-sand-50 flex items-center justify-center transition-colors"
+            >
+              {searchOpen ? <X className="w-4 h-4" /> : <Search className="w-4 h-4" />}
+            </button>
 
             <a
               href={getWhatsAppUrl()}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-semibold text-xs sm:text-sm shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
+              className="whitespace-nowrap shrink-0 inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-emerald-700 hover:bg-emerald-600 text-white font-bold text-xs sm:text-sm shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
             >
-              <MessageCircle className="w-4 h-4 fill-current" />
+              <MessageCircle className="w-4 h-4 fill-current shrink-0" />
               <span>{PSI_PROFILE.whatsappDisplay}</span>
             </a>
           </div>
 
-          {/* Mobile Hamburger Button */}
-          <div className="flex items-center gap-2 lg:hidden">
+          {/* Mobile / Tablet Actions */}
+          <div className="flex items-center gap-2 xl:hidden">
             <a
               href={getWhatsAppUrl()}
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="WhatsApp"
-              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-full bg-emerald-600 text-white text-xs font-semibold shadow"
+              aria-label="Agendar pelo WhatsApp"
+              className="lg:hidden whitespace-nowrap inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-emerald-700 hover:bg-emerald-600 text-white text-xs font-bold shadow"
             >
-              <MessageCircle className="w-3.5 h-3.5 fill-current" />
+              <MessageCircle className="w-3.5 h-3.5 fill-current shrink-0" />
               <span>Agendar</span>
             </a>
             <button
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 rounded-lg text-sand-100 hover:bg-petrol-800 focus:outline-none"
+              className="p-2.5 rounded-lg text-sand-100 hover:bg-petrol-800 focus:outline-none"
               aria-label="Abrir menu de navegação"
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -161,21 +162,56 @@ export function Header(): React.ReactElement {
         </div>
       </div>
 
-      {/* Mobile Dropdown Drawer */}
+      {/* Expandable Desktop Search Bar */}
+      {searchOpen && (
+        <div className="hidden lg:block bg-petrol-950 border-t border-white/10 py-3 px-4">
+          <form
+            onSubmit={handleSearchSubmit}
+            className="max-w-2xl mx-auto flex items-center gap-2"
+          >
+            <div className="relative flex-1">
+              <input
+                type="search"
+                autoFocus
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Pesquisar tema ou sintoma no blog (ex: limites, culpa, ansiedade, burnout, TDAH)..."
+                aria-label="Pesquisar artigos no blog"
+                className="w-full pl-4 pr-10 py-2.5 text-sm rounded-full bg-petrol-900 border border-sage-700 text-sand-50 placeholder-sand-300/70 focus:outline-none focus:border-bronze-400"
+              />
+              <button
+                type="submit"
+                aria-label="Executar busca"
+                className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full flex items-center justify-center text-bronze-400 hover:text-white"
+              >
+                <Search className="w-4 h-4" />
+              </button>
+            </div>
+            <button
+              type="submit"
+              className="px-5 py-2.5 rounded-full bg-sage-600 hover:bg-sage-500 text-white text-xs font-bold uppercase tracking-wider transition-colors"
+            >
+              Buscar
+            </button>
+          </form>
+        </div>
+      )}
+
+      {/* Mobile & Tablet Dropdown Drawer */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-petrol-950 border-t border-white/10 px-4 pt-4 pb-6 space-y-4">
+        <div className="xl:hidden bg-petrol-950 border-t border-white/10 px-4 pt-4 pb-6 space-y-4">
           <form onSubmit={handleSearchSubmit} className="relative">
             <input
               type="search"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Pesquisar sintomas ou artigos..."
-              className="w-full pl-4 pr-10 py-2.5 text-sm rounded-full bg-petrol-900 border border-sage-700 text-sand-50 placeholder-sand-300/60 focus:outline-none focus:border-bronze-400"
+              className="w-full pl-4 pr-11 py-2.5 text-sm rounded-full bg-petrol-900 border border-sage-700 text-sand-50 placeholder-sand-300/60 focus:outline-none focus:border-bronze-400"
             />
             <button
               type="submit"
               aria-label="Buscar"
-              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-bronze-400"
+              className="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center text-bronze-400"
             >
               <Search className="w-4 h-4" />
             </button>
@@ -199,7 +235,7 @@ export function Header(): React.ReactElement {
               href={getWhatsAppUrl()}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold text-sm shadow-md"
+              className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-emerald-700 hover:bg-emerald-600 text-white font-bold text-sm shadow-md"
             >
               <MessageCircle className="w-4 h-4 fill-current" />
               <span>AGENDAR SESSÃO • {PSI_PROFILE.whatsappDisplay}</span>

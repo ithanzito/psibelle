@@ -66,6 +66,7 @@ export default async function BlogPage({
               <svg
                 className="absolute -bottom-1.5 left-0 w-full h-2.5 text-bronze-500"
                 viewBox="0 0 200 12"
+                preserveAspectRatio="none"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
               >

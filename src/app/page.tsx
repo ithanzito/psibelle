@@ -32,6 +32,7 @@ import {
   fetchApprovedTestimonials,
 } from "@/lib/blog-service";
 import { WhatsAppCtaButton } from "@/components/WhatsAppCta";
+import { ReviewsCarousel } from "@/components/ReviewsCarousel";
 
 export const revalidate = 60;
 
@@ -169,7 +170,7 @@ export default async function HomePage(): Promise<React.ReactElement> {
               </div>
 
               {/* Primary CTA */}
-              <div className="pt-3 flex flex-col sm:flex-row sm:items-center gap-4">
+              <div className="pt-3 flex flex-col sm:flex-row sm:items-start gap-4">
                 <WhatsAppCtaButton
                   label="AGENDAR CONSULTA"
                   subtext="Atendimento rápido pelo WhatsApp"
@@ -256,75 +257,10 @@ export default async function HomePage(): Promise<React.ReactElement> {
             </p>
           </div>
 
-          {/* 4 Core Pillars */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-            {PILLARS.map((pillar) => (
-              <div
-                key={pillar.title}
-                className="bg-white text-petrol-900 p-6 rounded-2xl shadow-card border border-sand-200 flex flex-col justify-between hover:-translate-y-1 transition-transform"
-              >
-                <div className="space-y-3">
-                  <div className="inline-flex items-center gap-1 text-amber-500">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="w-4 h-4 fill-current" />
-                    ))}
-                  </div>
-                  <p className="text-[11px] uppercase tracking-widest text-sage-600 font-bold">
-                    {pillar.subtitle}
-                  </p>
-                  <h3 className="font-serif text-2xl font-bold text-petrol-900">
-                    {pillar.title}
-                  </h3>
-                  <p className="text-sm text-sage-800 leading-relaxed">
-                    {pillar.description}
-                  </p>
-                </div>
-                <div className="mt-5 pt-4 border-t border-sand-200 flex items-center justify-between text-xs text-sage-600 font-semibold">
-                  <span>Psicóloga Isabelle Momesso</span>
-                  <span>{PSI_PROFILE.crp}</span>
-                </div>
-              </div>
-            ))}
+          {/* Interactive Carousel of Patient Reviews & Clinical Pillars */}
+          <div className="mb-12">
+            <ReviewsCarousel testimonials={testimonials} />
           </div>
-
-          {/* Dynamic Testimonials Carousel/Grid (Appears automatically when added in /admin) */}
-          {testimonials.length > 0 && (
-            <div className="mt-14 pt-12 border-t border-white/15">
-              <h3 className="font-serif text-2xl sm:text-3xl font-bold text-center text-white mb-8">
-                Relatos e Avaliações de Pacientes
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-                {testimonials.map((t) => (
-                  <div
-                    key={t.id}
-                    className="bg-petrol-950/80 border border-bronze-400/30 p-6 rounded-2xl space-y-4"
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-sage-600 text-white font-bold flex items-center justify-center text-sm">
-                          {t.patient_initials}
-                        </div>
-                        <div>
-                          <p className="font-semibold text-white text-sm">
-                            {t.patient_label}
-                          </p>
-                          <p className="text-xs text-bronze-400">{t.modality}</p>
-                        </div>
-                      </div>
-                      <div className="flex text-amber-400">
-                        {[...Array(t.rating)].map((_, idx) => (
-                          <Star key={idx} className="w-3.5 h-3.5 fill-current" />
-                        ))}
-                      </div>
-                    </div>
-                    <p className="text-sm text-sand-100/90 italic leading-relaxed">
-                      “{t.content}”
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
 
           <div className="text-center mt-8">
             <WhatsAppCtaButton label="AGENDAR CONSULTA" />
@@ -443,7 +379,7 @@ export default async function HomePage(): Promise<React.ReactElement> {
                       rel="noopener noreferrer"
                       className={`text-xs font-bold px-3 py-1.5 rounded-lg transition-colors ${
                         isDarkCard
-                          ? "bg-emerald-600 hover:bg-emerald-500 text-white"
+                          ? "bg-emerald-700 hover:bg-emerald-600 text-white"
                           : "bg-sage-100 hover:bg-sage-200 text-petrol-900"
                       }`}
                     >

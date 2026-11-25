@@ -17,7 +17,7 @@ import { PSI_PROFILE, getWhatsAppUrl } from "@/lib/constants";
 export function Footer(): React.ReactElement {
   return (
     <footer className="bg-petrol-950 text-sand-100 border-t border-bronze-500/20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-14 pb-28 sm:pb-24">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10">
           {/* Column 1: Brand Monogram & Credentials (5 cols) */}
           <div className="lg:col-span-5 space-y-4">
