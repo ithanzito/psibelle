@@ -129,12 +129,12 @@ export function Footer(): React.ReactElement {
                 <span>{PSI_PROFILE.businessHours}</span>
               </li>
               <li className="flex items-center gap-2.5">
-                <MessageCircle className="w-4 h-4 text-emerald-400 shrink-0" />
+                <MessageCircle className="w-4 h-4 text-whatsapp shrink-0" />
                 <a
                   href={getWhatsAppUrl()}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hover:text-emerald-400 font-medium transition-colors"
+                  className="hover:text-whatsapp font-medium transition-colors"
                 >
                   {PSI_PROFILE.whatsappDisplay} (WhatsApp Agendamentos)
                 </a>

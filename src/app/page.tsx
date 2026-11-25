@@ -379,7 +379,7 @@ export default async function HomePage(): Promise<React.ReactElement> {
                       rel="noopener noreferrer"
                       className={`text-xs font-bold px-3 py-1.5 rounded-lg transition-colors ${
                         isDarkCard
-                          ? "bg-emerald-700 hover:bg-emerald-600 text-white"
+                          ? "bg-whatsapp hover:bg-whatsapp-dark text-petrol-950"
                           : "bg-sage-100 hover:bg-sage-200 text-petrol-900"
                       }`}
                     >
@@ -554,7 +554,7 @@ export default async function HomePage(): Promise<React.ReactElement> {
           <div className="text-center">
             <Link
               href="/blog"
-              className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-sage-600 hover:bg-sage-500 text-white font-bold text-sm uppercase tracking-wider shadow-lg hover:shadow-xl transition-all"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-mint-400 hover:bg-mint-300 text-petrol-950 font-bold text-sm uppercase tracking-wider shadow-lg hover:shadow-xl transition-all"
             >
               <span>IR AO BLOG COMPLETO ({posts.length} ARTIGOS)</span>
               <ArrowRight className="w-4 h-4" />
@@ -635,7 +635,7 @@ export default async function HomePage(): Promise<React.ReactElement> {
                   </li>
 
                   <li className="flex items-start gap-3.5">
-                    <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
+                    <div className="w-10 h-10 rounded-xl bg-whatsapp/15 text-whatsapp-deep flex items-center justify-center shrink-0">
                       <MessageCircle className="w-5 h-5" />
                     </div>
                     <div>
@@ -644,7 +644,7 @@ export default async function HomePage(): Promise<React.ReactElement> {
                         href={getWhatsAppUrl()}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-emerald-700 font-semibold hover:underline text-sm"
+                        className="text-whatsapp-deep font-semibold hover:underline text-sm"
                       >
                         {PSI_PROFILE.whatsappDisplay} (Clique para iniciar conversa)
                       </a>

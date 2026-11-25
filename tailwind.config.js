@@ -32,6 +32,23 @@ module.exports = {
           300: "#DDD2BD",
           400: "#C8B698",
         },
+        // Verde oficial do WhatsApp (botões de conversão)
+        whatsapp: {
+          DEFAULT: "#25D366",
+          dark: "#1EBE5A",
+          deep: "#128C7E",
+        },
+        // Verde pastel "sálvia suave" extraído do terninho da foto da Isabelle
+        mint: {
+          50: "#F4F7F1",
+          100: "#E7EEE1",
+          200: "#D3DFC9",
+          300: "#BED0B0",
+          400: "#AFC39E",
+          500: "#9DB38C",
+          600: "#849B73",
+          700: "#6B825B",
+        },
         bronze: {
           400: "#C8A27A",
           500: "#B89166",

@@ -131,7 +131,7 @@ export function Header(): React.ReactElement {
               href={getWhatsAppUrl()}
               target="_blank"
               rel="noopener noreferrer"
-              className="whitespace-nowrap shrink-0 inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-emerald-700 hover:bg-emerald-600 text-white font-bold text-xs sm:text-sm shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
+              className="whitespace-nowrap shrink-0 inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-whatsapp hover:bg-whatsapp-dark text-petrol-950 font-bold text-xs sm:text-sm shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
             >
               <MessageCircle className="w-4 h-4 fill-current shrink-0" />
               <span>{PSI_PROFILE.whatsappDisplay}</span>
@@ -145,7 +145,7 @@ export function Header(): React.ReactElement {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Agendar pelo WhatsApp"
-              className="lg:hidden whitespace-nowrap inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-emerald-700 hover:bg-emerald-600 text-white text-xs font-bold shadow"
+              className="lg:hidden whitespace-nowrap inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-whatsapp hover:bg-whatsapp-dark text-petrol-950 text-xs font-bold shadow"
             >
               <MessageCircle className="w-3.5 h-3.5 fill-current shrink-0" />
               <span>Agendar</span>
@@ -235,7 +235,7 @@ export function Header(): React.ReactElement {
               href={getWhatsAppUrl()}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-emerald-700 hover:bg-emerald-600 text-white font-bold text-sm shadow-md"
+              className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-whatsapp hover:bg-whatsapp-dark text-petrol-950 font-bold text-sm shadow-md"
             >
               <MessageCircle className="w-4 h-4 fill-current" />
               <span>AGENDAR SESSÃO • {PSI_PROFILE.whatsappDisplay}</span>

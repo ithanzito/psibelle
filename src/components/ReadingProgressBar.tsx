@@ -31,7 +31,7 @@ export function ReadingProgressBar(): React.ReactElement {
   return (
     <div className="fixed top-0 left-0 right-0 z-[60] h-1.5 bg-transparent pointer-events-none">
       <div
-        className="h-full bg-gradient-to-r from-sage-500 via-bronze-400 to-emerald-500 transition-all duration-150"
+        className="h-full bg-gradient-to-r from-sage-500 via-bronze-400 to-mint-500 transition-all duration-150"
         style={{ width: `${progress}%` }}
       />
     </div>

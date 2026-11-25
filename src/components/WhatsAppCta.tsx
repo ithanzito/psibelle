@@ -41,15 +41,15 @@ export function FloatingWhatsAppAndPwa(): React.ReactElement {
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Agendar sessão pelo WhatsApp"
-        className="group flex items-center gap-2.5 bg-emerald-700 hover:bg-emerald-600 text-white pl-4 pr-5 py-3 rounded-full shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 border border-white/20"
+        className="group flex items-center gap-2.5 bg-whatsapp hover:bg-whatsapp-dark text-petrol-950 pl-4 pr-5 py-3 rounded-full shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 border border-white/20"
       >
         <span className="relative flex h-2.5 w-2.5">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-200 opacity-75"></span>
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
           <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-white"></span>
         </span>
         <MessageCircle className="w-5 h-5 fill-current shrink-0" />
         <div className="flex flex-col text-left leading-tight whitespace-nowrap">
-          <span className="text-[10px] uppercase tracking-wider text-emerald-50 font-semibold">
+          <span className="text-[10px] uppercase tracking-wider text-petrol-900/80 font-semibold">
             Online e Presencial
           </span>
           <span className="text-xs sm:text-sm font-bold">Agendar Sessão</span>
@@ -60,7 +60,7 @@ export function FloatingWhatsAppAndPwa(): React.ReactElement {
 }
 
 /**
- * Reusable conversion CTA button with WCAG AA high contrast (`bg-emerald-700`).
+ * Reusable conversion CTA button with WCAG AA contrast (official WhatsApp green + dark petrol text).
  */
 export function WhatsAppCtaButton({
   label = "AGENDAR CONSULTA",
@@ -79,7 +79,7 @@ export function WhatsAppCtaButton({
         href={getWhatsAppUrl(customMessage)}
         target="_blank"
         rel="noopener noreferrer"
-        className="whitespace-nowrap inline-flex items-center justify-center gap-3 px-8 py-4 rounded-tl-2xl rounded-tr-md rounded-br-2xl rounded-bl-md bg-gradient-to-b from-emerald-700 to-teal-800 hover:from-emerald-600 hover:to-teal-700 text-white font-bold text-base sm:text-lg tracking-wide shadow-lg hover:shadow-xl hover:scale-[1.03] active:scale-[0.99] transition-all duration-300"
+        className="whitespace-nowrap inline-flex items-center justify-center gap-3 px-8 py-4 rounded-tl-2xl rounded-tr-md rounded-br-2xl rounded-bl-md bg-gradient-to-b from-whatsapp to-whatsapp-dark hover:from-[#2EE070] hover:to-whatsapp text-petrol-950 font-bold text-base sm:text-lg tracking-wide shadow-lg hover:shadow-xl hover:scale-[1.03] active:scale-[0.99] transition-all duration-300"
       >
         <MessageCircle className="w-5 h-5 sm:w-6 sm:h-6 fill-current shrink-0" />
         <span>{label}</span>

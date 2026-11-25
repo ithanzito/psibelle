@@ -252,12 +252,12 @@ export default async function BlogPage({
                 <span>{PSI_PROFILE.businessHours}</span>
               </li>
               <li className="flex items-center gap-2.5">
-                <MessageCircle className="w-4 h-4 text-emerald-600 shrink-0" />
+                <MessageCircle className="w-4 h-4 text-whatsapp-deep shrink-0" />
                 <a
                   href={getWhatsAppUrl()}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="font-bold text-emerald-700 hover:underline"
+                  className="font-bold text-whatsapp-deep hover:underline"
                 >
                   {PSI_PROFILE.whatsappDisplay} (WhatsApp)
                 </a>

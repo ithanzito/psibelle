@@ -363,7 +363,7 @@ export default function AdminDashboardPage(): React.ReactElement {
             <button
               type="button"
               onClick={startNewPost}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs uppercase tracking-wider shadow"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-mint-400 hover:bg-mint-300 text-petrol-950 font-bold text-xs uppercase tracking-wider shadow"
             >
               <Plus className="w-4 h-4" />
               <span>Novo Artigo</span>
@@ -384,13 +384,13 @@ export default function AdminDashboardPage(): React.ReactElement {
           <div
             className={`p-4 rounded-2xl border flex items-center justify-between ${
               feedback.type === "success"
-                ? "bg-emerald-50 border-emerald-200 text-emerald-800"
+                ? "bg-mint-100 border-mint-300 text-petrol-900"
                 : "bg-red-50 border-red-200 text-red-800"
             }`}
           >
             <div className="flex items-center gap-2.5 text-sm font-medium">
               {feedback.type === "success" ? (
-                <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+                <CheckCircle2 className="w-5 h-5 text-mint-700" />
               ) : (
                 <AlertCircle className="w-5 h-5 text-red-600" />
               )}
@@ -664,7 +664,7 @@ export default function AdminDashboardPage(): React.ReactElement {
               <button
                 type="submit"
                 disabled={loading}
-                className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs uppercase tracking-wider shadow-md"
+                className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl bg-mint-400 hover:bg-mint-300 text-petrol-950 font-bold text-xs uppercase tracking-wider shadow-md"
               >
                 {loading ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
